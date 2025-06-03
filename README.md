@@ -5,6 +5,19 @@ Incluye autorización basada en roles y buenas prácticas de seguridad para apli
 
 ---
 
+## Endpoints principales
+
+- `POST /api/auth/register` — Registro de usuario con rol  
+  ![Formulario de registro con Spring Boot](assets/img/formulario-register.png)
+
+- `POST /api/auth/login` — Autenticación y obtención de JWT  
+  ![Pantalla de login que devuelve token JWT](assets/img/login-page.png)
+
+- `GET /api/test/empleado` — Endpoint protegido para rol EMPLEADO  
+  ![Prueba de acceso al endpoint /api/test/empleado](assets/img/test-empleado.png)
+
+---
+
 ## Tecnologías principales
 
 - Java 17+
@@ -25,6 +38,7 @@ Incluye autorización basada en roles y buenas prácticas de seguridad para apli
 - Contraseñas seguras con BCrypt
 - Arquitectura escalable y lista para microservicios
 - Ejemplo de integración con base de datos relacional y tablas intermedias
+
 
 ---
 
