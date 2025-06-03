@@ -32,7 +32,7 @@ Incluye autorización basada en roles y buenas prácticas de seguridad para apli
 
 1. **Clona el repositorio:**
    ```bash
-   git clone [https://github.com/tuusuario/letrasypapeles-jwt-springboot-api.git](https://github.com/RodrigoSanchezDev/jwt-springboot-api.git)
+   git clone https://github.com/RodrigoSanchezDev/jwt-springboot-api.git
    cd letrasypapeles-jwt-springboot-api
    ```
 
