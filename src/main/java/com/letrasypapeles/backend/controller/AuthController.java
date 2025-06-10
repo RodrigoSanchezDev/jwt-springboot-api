@@ -16,9 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controlador REST para manejar registro y login (emisión de JWT).
- */
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -39,7 +37,7 @@ public class AuthController {
     @Data @NoArgsConstructor @AllArgsConstructor
     public static class LoginRequest {
         private String email;
-        private String contra; // la contraseña en texto plano
+        private String contra; 
     }
 
     // DTO para la respuesta de login (token)

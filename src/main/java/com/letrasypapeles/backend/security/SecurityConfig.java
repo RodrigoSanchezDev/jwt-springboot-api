@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity  // habilita @PreAuthorize / @PostAuthorize / @Secured
+@EnableMethodSecurity  
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -58,10 +58,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/h2-console/**").permitAll()
 
-                // 3) ejemplo: ruta admin sólo ADMIN
+                // Endpoints exclusivos por rol
+                .requestMatchers("/api/cliente/**").hasAuthority("CLIENTE")
+                .requestMatchers("/api/empleado/**").hasAuthority("EMPLEADO")
+                .requestMatchers("/api/gerente/**").hasAuthority("GERENTE")
                 .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
 
-                // 4) el resto requiere **cualquier** autenticación
+                // El resto requiere autenticación
                 .anyRequest().authenticated())
 
             // 5) para consola H2 en dev

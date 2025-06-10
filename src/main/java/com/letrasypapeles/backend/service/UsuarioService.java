@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor   // inyecta final fields vía constructor
+@RequiredArgsConstructor   
 public class UsuarioService implements UserDetailsService {
 
     private final ClienteRepository clienteRepository;
@@ -47,7 +47,7 @@ public class UsuarioService implements UserDetailsService {
         // 3) Devolver un UserDetails con e-mail, hash de contraseña y authorities
         return new User(
                 cliente.getEmail(),
-                cliente.getContraseña(),   // ← ya está almacenada en BCrypt
+                cliente.getContraseña(),   
                 authorities
         );
     }

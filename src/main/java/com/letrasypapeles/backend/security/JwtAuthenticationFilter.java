@@ -32,6 +32,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
+        // Ignorar rutas públicas para el filtro JWT
+        String path = request.getRequestURI();
+        if (path.startsWith("/api/auth/") || path.startsWith("/h2-console/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 1) Capturamos el header "Authorization"
         final String header = request.getHeader("Authorization");
 
@@ -74,12 +81,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
-                // Finalmente, seteamos el contexto de seguridad
+                
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
-        // Seguir con el resto del filter chain
+        
         filterChain.doFilter(request, response);
     }
 }

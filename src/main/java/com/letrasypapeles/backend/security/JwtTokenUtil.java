@@ -13,7 +13,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-    // La clave secreta la leemos desde application.properties (o variable de entorno)
+    // La clave secreta la leemos desde application.properties
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -21,7 +21,7 @@ public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private long jwtExpirationMs;
 
-    // Generar token a partir de UserDetails (usualmente después del login)
+    // Generar token a partir de UserDetails 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
@@ -31,7 +31,7 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    // Extraer el email (subject) de un token
+    // Extraer el email de un token
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
