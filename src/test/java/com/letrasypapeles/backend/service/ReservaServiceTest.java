@@ -257,4 +257,56 @@ class ReservaServiceTest {
 
         assertEquals("El proveedor asignado no tiene información completa.", exception.getMessage());
     }
+    
+    @Test
+    void testGuardarConValidacion_StockInsuficiente() {
+        Producto producto = Producto.builder().id(1L).nombre("Test Product").build();
+        Reserva reserva = Reserva.builder()
+                .id(1L)
+                .estado("Pendiente")
+                .cantidad(20)  // Cantidad mayor al stock disponible
+                .producto(producto)
+                .build();
+
+        List<Inventario> inventarios = Arrays.asList(
+                Inventario.builder().cantidad(5).build(),
+                Inventario.builder().cantidad(3).build()
+        ); // Total stock = 8, pero se necesitan 20
+
+        Mockito.when(inventarioService.obtenerPorProductoId(1L)).thenReturn(inventarios);
+        Mockito.when(reservaRepository.save(any(Reserva.class))).thenReturn(reserva);
+
+        Reserva result = reservaService.guardarConValidacion(reserva);
+
+        assertEquals("Rechazada", result.getEstado());
+        Mockito.verify(reservaRepository).save(any(Reserva.class));
+    }
+    
+    @Test
+    void testGuardarConProveedorValidado_ProveedorSinNombre() {
+        Proveedor proveedor = Proveedor.builder()
+                .id(1L)
+                .nombre(null)
+                .contacto("test@test.com")
+                .build();
+
+        Producto producto = Producto.builder()
+                .id(1L)
+                .nombre("Test Product")
+                .proveedor(proveedor)
+                .build();
+
+        Reserva reserva = Reserva.builder()
+                .id(1L)
+                .estado("Pendiente")
+                .cantidad(5)
+                .producto(producto)
+                .build();
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            reservaService.guardarConProveedorValidado(reserva);
+        });
+
+        assertEquals("El proveedor asignado no tiene información completa.", exception.getMessage());
+    }
 }

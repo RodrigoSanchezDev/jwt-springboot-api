@@ -222,4 +222,55 @@ class RoleTest {
         assertTrue(roleConClientes.getClientes().contains(cliente1));
         assertTrue(roleConClientes.getClientes().contains(cliente2));
     }
+
+    @Test
+    void testEqualsAndHashCodeExhaustive() {
+        // Casos exhaustivos para equals y hashCode en Role
+        
+        // Caso 1: Objetos iguales
+        Role role1 = Role.builder().nombre("CLIENTE").build();
+        Role role2 = Role.builder().nombre("CLIENTE").build();
+        
+        assertEquals(role1, role2);
+        assertEquals(role1.hashCode(), role2.hashCode());
+        
+        // Caso 2: Diferentes nombres
+        Role roleDifferent = Role.builder().nombre("ADMIN").build();
+        
+        assertNotEquals(role1, roleDifferent);
+        assertNotEquals(role1.hashCode(), roleDifferent.hashCode());
+        
+        // Caso 3: Nombre null vs no null
+        Role roleNullNombre = Role.builder().nombre(null).build();
+        Role roleWithNombre = Role.builder().nombre("CLIENTE").build();
+        
+        assertNotEquals(roleNullNombre, roleWithNombre);
+        assertNotEquals(roleWithNombre, roleNullNombre);
+        
+        // Caso 4: Ambos null
+        Role role1Null = new Role();
+        Role role2Null = new Role();
+        
+        assertEquals(role1Null, role2Null);
+        assertEquals(role1Null.hashCode(), role2Null.hashCode());
+        
+        // Caso 5: canEqual con diferentes tipos
+        assertFalse(role1.canEqual(null));
+        assertFalse(role1.canEqual("string"));
+        assertTrue(role1.canEqual(role2));
+        
+        // Caso 6: equals con null
+        assertNotEquals(role1, null);
+        
+        // Caso 7: equals con mismo objeto
+        assertEquals(role1, role1);
+        
+        // Caso 8: Diferentes nombres
+        Role roleAdmin = Role.builder().nombre("ADMIN").build();
+        assertNotEquals(role1, roleAdmin);
+        
+        // Caso 9: Diferentes IDs
+        Role roleDifferentName = Role.builder().nombre("EMPLEADO").build();
+        assertNotEquals(role1, roleDifferentName);
+    }
 }

@@ -29,14 +29,14 @@ import java.util.List;
 
     @GetMapping(&quot;/producto/{productoId}&quot;)
     public ResponseEntity&lt;List&lt;Inventario&gt;&gt; obtenerPorProductoId(@PathVariable Long productoId) {
-<span class="nc" id="L32">        List&lt;Inventario&gt; inventarios = inventarioService.obtenerPorProductoId(productoId);</span>
-<span class="nc" id="L33">        return ResponseEntity.ok(inventarios);</span>
+<span class="fc" id="L32">        List&lt;Inventario&gt; inventarios = inventarioService.obtenerPorProductoId(productoId);</span>
+<span class="fc" id="L33">        return ResponseEntity.ok(inventarios);</span>
     }
 
     @GetMapping(&quot;/sucursal/{sucursalId}&quot;)
     public ResponseEntity&lt;List&lt;Inventario&gt;&gt; obtenerPorSucursalId(@PathVariable Long sucursalId) {
-<span class="nc" id="L38">        List&lt;Inventario&gt; inventarios = inventarioService.obtenerPorSucursalId(sucursalId);</span>
-<span class="nc" id="L39">        return ResponseEntity.ok(inventarios);</span>
+<span class="fc" id="L38">        List&lt;Inventario&gt; inventarios = inventarioService.obtenerPorSucursalId(sucursalId);</span>
+<span class="fc" id="L39">        return ResponseEntity.ok(inventarios);</span>
     }
 
     @PostMapping

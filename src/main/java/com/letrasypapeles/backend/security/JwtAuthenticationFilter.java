@@ -45,44 +45,52 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String email = null;
         String token = null;
 
-        // 2) Comprobamos que empiece con "Bearer "
+        // 2) Comprobamos que empiece con "Bearer " y tenga longitud mínima
         if (header != null && header.startsWith("Bearer ")) {
             token = header.substring(7); // quitamos "Bearer "
-            try {
-                email = jwtUtil.extractUsername(token);
-            } catch (Exception ex) {
-                // Token inválido o expirado: dejamos que pase al filterChain,
-                // y Spring devolverá 401 si intenta acceder a endpoint protegido.
-                logger.warn("JWT inválido: " + ex.getMessage());
+            // Validar que el token tenga una longitud mínima razonable
+            if (token != null && token.length() > 10) {
+                try {
+                    email = jwtUtil.extractUsername(token);
+                } catch (Exception ex) {
+                    // Token inválido o expirado: dejamos que pase al filterChain,
+                    // y Spring devolverá 401 si intenta acceder a endpoint protegido.
+                    logger.warn("JWT inválido: " + ex.getMessage());
+                }
             }
         }
 
         // 3) Si extrajimos un email y aún no hay autenticación en el contexto:
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Cargamos UserDetails usando nuestro service que implementa UserDetailsService
-            UserDetails userDetails = usuarioService.loadUserByUsername(email);
+            try {
+                // Cargamos UserDetails usando nuestro service que implementa UserDetailsService
+                UserDetails userDetails = usuarioService.loadUserByUsername(email);
 
-            // Extraer authorities del token y reconstruir UserDetails con authorities del JWT
-            List<String> roles = jwtUtil.extractAuthorities(token);
-            List<SimpleGrantedAuthority> authorities = roles.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .toList();
-            UserDetails userDetailsWithRoles = new org.springframework.security.core.userdetails.User(
-                    userDetails.getUsername(), userDetails.getPassword(), authorities
-            );
-
-            // 4) Si el token es válido para ese usuario, construimos un Authentication
-            if (jwtUtil.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetailsWithRoles, null, userDetailsWithRoles.getAuthorities());
-
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
+                // Extraer authorities del token y reconstruir UserDetails con authorities del JWT
+                List<String> roles = jwtUtil.extractAuthorities(token);
+                List<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+                UserDetails userDetailsWithRoles = new org.springframework.security.core.userdetails.User(
+                        userDetails.getUsername(), userDetails.getPassword(), authorities
                 );
 
-                
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                // 4) Si el token es válido para ese usuario, construimos un Authentication
+                if (jwtUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetailsWithRoles, null, userDetailsWithRoles.getAuthorities());
+
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(request)
+                    );
+
+                    
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception ex) {
+                // Error al cargar el usuario: continuar sin autenticación
+                logger.warn("Error cargando usuario: " + ex.getMessage());
             }
         }
 

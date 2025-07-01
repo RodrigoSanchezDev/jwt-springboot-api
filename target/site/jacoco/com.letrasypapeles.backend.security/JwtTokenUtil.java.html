@@ -51,7 +51,7 @@ import java.util.function.Function;
     // Validar token contra los datos del usuario
     public boolean validateToken(String token, UserDetails userDetails) {
 <span class="fc" id="L53">        final String username = getUsernameFromToken(token);</span>
-<span class="pc bpc" id="L54" title="2 of 4 branches missed.">        return ( username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token) );</span>
+<span class="pc bpc" id="L54" title="1 of 4 branches missed.">        return ( username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token) );</span>
     }
 
     // Método interno: parsear todos los claims

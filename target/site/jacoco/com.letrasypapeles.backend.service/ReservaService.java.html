@@ -55,7 +55,7 @@ import java.util.Optional;
 <span class="fc" id="L55">        List&lt;Inventario&gt; inventarios = inventarioService.obtenerPorProductoId(reserva.getProducto().getId());</span>
 <span class="fc" id="L56">        int totalStock = inventarios.stream().mapToInt(Inventario::getCantidad).sum();</span>
 
-<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (totalStock &gt; 0) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (totalStock &gt;= reserva.getCantidad()) {</span>
 <span class="fc" id="L59">            reserva.setEstado(&quot;Confirmada&quot;);</span>
 <span class="fc" id="L60">            return reservaRepository.save(reserva);</span>
         } else {
@@ -66,7 +66,7 @@ import java.util.Optional;
 
     public Reserva guardarConProveedorValidado(Reserva reserva) {
 <span class="fc" id="L68">        Proveedor proveedor = reserva.getProducto().getProveedor();</span>
-<span class="pc bpc" id="L69" title="1 of 6 branches missed.">        if (proveedor == null || proveedor.getNombre() == null || proveedor.getContacto() == null) {</span>
+<span class="fc bfc" id="L69" title="All 6 branches covered.">        if (proveedor == null || proveedor.getNombre() == null || proveedor.getContacto() == null) {</span>
 <span class="fc" id="L70">            throw new RuntimeException(&quot;El proveedor asignado no tiene información completa.&quot;);</span>
         }
 

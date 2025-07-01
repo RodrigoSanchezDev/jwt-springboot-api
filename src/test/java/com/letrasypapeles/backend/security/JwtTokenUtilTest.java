@@ -112,4 +112,68 @@ class JwtTokenUtilTest {
             jwtTokenUtil.validateToken(invalidToken, userDetails);
         });
     }
+    
+    @Test
+    void testGetUsernameFromInvalidToken() {
+        String invalidToken = "invalid.token.here";
+        
+        assertThrows(Exception.class, () -> {
+            jwtTokenUtil.getUsernameFromToken(invalidToken);
+        });
+    }
+    
+    @Test
+    void testValidateTokenWithWrongUser() {
+        UserDetails originalUser = User.builder()
+                .username("originaluser")
+                .password("password")
+                .roles("USER")
+                .build();
+                
+        UserDetails differentUser = User.builder()
+                .username("differentuser")
+                .password("password")
+                .roles("USER")
+                .build();
+
+        String token = jwtTokenUtil.generateToken(originalUser);
+        boolean isValid = jwtTokenUtil.validateToken(token, differentUser);
+
+        assertFalse(isValid);
+    }
+    
+    @Test
+    void testGenerateTokenWithNullUser() {
+        assertThrows(Exception.class, () -> {
+            jwtTokenUtil.generateToken(null);
+        });
+    }
+    
+    @Test
+    void testValidateTokenWithNullToken() {
+        UserDetails userDetails = User.builder()
+                .username("testuser")
+                .password("password")
+                .roles("USER")
+                .build();
+                
+        assertThrows(Exception.class, () -> {
+            jwtTokenUtil.validateToken(null, userDetails);
+        });
+    }
+    
+    @Test
+    void testValidateTokenWithNullUserDetails() {
+        UserDetails userDetails = User.builder()
+                .username("testuser")
+                .password("password")
+                .roles("USER")
+                .build();
+                
+        String token = jwtTokenUtil.generateToken(userDetails);
+        
+        assertThrows(Exception.class, () -> {
+            jwtTokenUtil.validateToken(token, null);
+        });
+    }
 }

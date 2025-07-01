@@ -344,4 +344,83 @@ class ClienteTest {
         assertNotNull(builderString);
         assertTrue(builderString.contains("ClienteBuilder"));
     }
+
+    @Test
+    void testEqualsAndHashCodeEdgeCases() {
+        // Test equals with same ID but all other fields null
+        Cliente cliente1 = new Cliente();
+        cliente1.setId(1L);
+        Cliente cliente2 = new Cliente();
+        cliente2.setId(1L);
+        
+        assertEquals(cliente1, cliente2);
+        assertEquals(cliente1.hashCode(), cliente2.hashCode());
+        
+        // Test with different IDs
+        cliente2.setId(2L);
+        assertNotEquals(cliente1, cliente2);
+        
+        // Test canEqual with different objects
+        assertFalse(cliente1.canEqual(new Object()));
+        assertTrue(cliente1.canEqual(cliente2));
+        
+        // Test all null vs some null cases
+        Cliente clienteNulo = new Cliente();
+        Cliente clienteConNombre = new Cliente();
+        clienteConNombre.setNombre("Juan");
+        
+        assertNotEquals(clienteNulo, clienteConNombre);
+        assertNotEquals(clienteConNombre, clienteNulo);
+        
+        // Test diferentes combinaciones de campos nulos vs no nulos
+        Cliente c1 = new Cliente();
+        c1.setApellido("Perez");
+        Cliente c2 = new Cliente();
+        assertNotEquals(c1, c2);
+        
+        c1 = new Cliente();
+        c1.setEmail("test@email.com");
+        c2 = new Cliente();
+        assertNotEquals(c1, c2);
+        
+        c1 = new Cliente();
+        c1.setContraseña("password");
+        c2 = new Cliente();
+        assertNotEquals(c1, c2);
+        
+        c1 = new Cliente();
+        c1.setPuntosFidelidad(100);
+        c2 = new Cliente();
+        c2.setPuntosFidelidad(200);
+        assertNotEquals(c1, c2);
+    }
+    
+    @Test
+    void testEqualsAndHashCodeWithRolesNull() {
+        Cliente cliente1 = Cliente.builder()
+                .id(1L)
+                .nombre("Juan")
+                .roles(null)
+                .build();
+                
+        Cliente cliente2 = Cliente.builder()
+                .id(1L)
+                .nombre("Juan")
+                .roles(null)
+                .build();
+                
+        assertEquals(cliente1, cliente2);
+        assertEquals(cliente1.hashCode(), cliente2.hashCode());
+        
+        // One null, one empty set
+        Set<Role> rolesVacios = new HashSet<>();
+        cliente2.setRoles(rolesVacios);
+        assertNotEquals(cliente1, cliente2);
+        
+        // One null, one with roles
+        Set<Role> rolesConDatos = new HashSet<>();
+        rolesConDatos.add(role1);
+        cliente2.setRoles(rolesConDatos);
+        assertNotEquals(cliente1, cliente2);
+    }
 }

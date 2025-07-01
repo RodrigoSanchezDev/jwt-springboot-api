@@ -55,7 +55,7 @@ public class ReservaService {
         List<Inventario> inventarios = inventarioService.obtenerPorProductoId(reserva.getProducto().getId());
         int totalStock = inventarios.stream().mapToInt(Inventario::getCantidad).sum();
 
-        if (totalStock > 0) {
+        if (totalStock >= reserva.getCantidad()) {
             reserva.setEstado("Confirmada");
             return reservaRepository.save(reserva);
         } else {

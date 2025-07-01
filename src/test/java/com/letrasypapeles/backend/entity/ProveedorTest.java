@@ -261,4 +261,80 @@ class ProveedorTest {
         assertNotNull(builderString);
         assertTrue(builderString.contains("ProveedorBuilder"));
     }
+
+    @Test
+    void testEqualsEdgeCasesExhaustive() {
+        // Test casos edge de equals y hashCode para maximizar cobertura
+        
+        // Caso 1: Un campo null vs no null en nombre
+        Proveedor p1 = new Proveedor();
+        p1.setId(1L);
+        p1.setNombre(null);
+        p1.setContacto("contacto");
+        
+        Proveedor p2 = new Proveedor();
+        p2.setId(1L);
+        p2.setNombre("nombre");
+        p2.setContacto("contacto");
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1); // Test simétrico
+        
+        // Caso 2: Un campo null vs no null en contacto
+        p1 = new Proveedor();
+        p1.setId(1L);
+        p1.setNombre("nombre");
+        p1.setContacto(null);
+        
+        p2 = new Proveedor();
+        p2.setId(1L);
+        p2.setNombre("nombre");
+        p2.setContacto("contacto");
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1); // Test simétrico
+        
+        // Caso 3: Ambos null vs uno null en ID
+        p1 = new Proveedor();
+        p1.setId(null);
+        p1.setNombre("nombre");
+        
+        p2 = new Proveedor();
+        p2.setId(1L);
+        p2.setNombre("nombre");
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1);
+        
+        // Caso 4: Ambos ID null
+        p1 = new Proveedor();
+        p1.setId(null);
+        p1.setNombre("nombre");
+        
+        p2 = new Proveedor();
+        p2.setId(null);
+        p2.setNombre("nombre");
+        
+        assertEquals(p1, p2);
+        assertEquals(p1.hashCode(), p2.hashCode());
+        
+        // Caso 5: Test canEqual con null
+        assertFalse(p1.canEqual(null));
+        
+        // Caso 6: Test todos los campos diferentes
+        p1 = Proveedor.builder()
+                .id(1L)
+                .nombre("A")
+                .contacto("A")
+                .build();
+                
+        p2 = Proveedor.builder()
+                .id(2L)
+                .nombre("B")
+                .contacto("B")
+                .build();
+                
+        assertNotEquals(p1, p2);
+        assertNotEquals(p1.hashCode(), p2.hashCode());
+    }
 }

@@ -83,8 +83,15 @@ import org.slf4j.LoggerFactory;
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-<span class="fc" id="L86">        final String username = extractUsername(token);</span>
-<span class="pc bpc" id="L87" title="1 of 4 branches missed.">        return (username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token));</span>
+        try {
+<span class="fc bfc" id="L87" title="All 4 branches covered.">            if (token == null || token.trim().isEmpty()) {</span>
+<span class="fc" id="L88">                return false;</span>
+            }
+<span class="fc" id="L90">            final String username = extractUsername(token);</span>
+<span class="pc bpc" id="L91" title="1 of 4 branches missed.">            return (username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token));</span>
+<span class="fc" id="L92">        } catch (Exception e) {</span>
+<span class="fc" id="L93">            return false;</span>
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

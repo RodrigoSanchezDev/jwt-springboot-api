@@ -222,10 +222,42 @@ public class AuthControllerTest {
         assertEquals("another@email.com", loginRequest1.getEmail());
         assertEquals("newpass", loginRequest1.getContra());
         
-        // Test equals and hashCode
+        // Test equals - same object
+        assertEquals(loginRequest2, loginRequest2);
+        
+        // Test equals - equivalent objects
         AuthController.LoginRequest loginRequest3 = new AuthController.LoginRequest("test@email.com", "password");
         assertEquals(loginRequest2, loginRequest3);
         assertEquals(loginRequest2.hashCode(), loginRequest3.hashCode());
+        
+        // Test equals - different objects
+        AuthController.LoginRequest loginRequest4 = new AuthController.LoginRequest("different@email.com", "password");
+        assertNotEquals(loginRequest2, loginRequest4);
+        
+        AuthController.LoginRequest loginRequest5 = new AuthController.LoginRequest("test@email.com", "different");
+        assertNotEquals(loginRequest2, loginRequest5);
+        
+        // Test equals - null
+        assertNotEquals(loginRequest2, null);
+        
+        // Test equals - different class
+        assertNotEquals(loginRequest2, "string");
+        
+        // Test canEqual
+        assertTrue(loginRequest2.canEqual(loginRequest3));
+        assertFalse(loginRequest2.canEqual("string"));
+        
+        // Test with null fields
+        AuthController.LoginRequest loginNull1 = new AuthController.LoginRequest();
+        AuthController.LoginRequest loginNull2 = new AuthController.LoginRequest();
+        assertEquals(loginNull1, loginNull2);
+        assertEquals(loginNull1.hashCode(), loginNull2.hashCode());
+        
+        loginNull1.setEmail("test@email.com");
+        assertNotEquals(loginNull1, loginNull2);
+        
+        loginNull2.setEmail("test@email.com");
+        assertEquals(loginNull1, loginNull2);
         
         // Test toString
         String toString = loginRequest2.toString();
@@ -247,10 +279,39 @@ public class AuthControllerTest {
         response1.setToken("newtoken");
         assertEquals("newtoken", response1.getToken());
         
-        // Test equals and hashCode
+        // Test equals - same object
+        assertEquals(response2, response2);
+        
+        // Test equals - equivalent objects
         AuthController.LoginResponse response3 = new AuthController.LoginResponse("token123");
         assertEquals(response2, response3);
         assertEquals(response2.hashCode(), response3.hashCode());
+        
+        // Test equals - different objects
+        AuthController.LoginResponse response4 = new AuthController.LoginResponse("differenttoken");
+        assertNotEquals(response2, response4);
+        
+        // Test equals - null
+        assertNotEquals(response2, null);
+        
+        // Test equals - different class
+        assertNotEquals(response2, "string");
+        
+        // Test canEqual
+        assertTrue(response2.canEqual(response3));
+        assertFalse(response2.canEqual("string"));
+        
+        // Test with null token
+        AuthController.LoginResponse responseNull1 = new AuthController.LoginResponse();
+        AuthController.LoginResponse responseNull2 = new AuthController.LoginResponse();
+        assertEquals(responseNull1, responseNull2);
+        assertEquals(responseNull1.hashCode(), responseNull2.hashCode());
+        
+        responseNull1.setToken("test");
+        assertNotEquals(responseNull1, responseNull2);
+        
+        responseNull2.setToken("test");
+        assertEquals(responseNull1, responseNull2);
         
         // Test toString
         String toString = response2.toString();
@@ -287,12 +348,63 @@ public class AuthControllerTest {
         assertEquals("pass456", request1.getContraseña());
         assertEquals("EMPLEADO", request1.getRol());
         
-        // Test equals and hashCode
+        // Test equals and hashCode - same objects
+        assertEquals(request2, request2);
+        assertEquals(request2.hashCode(), request2.hashCode());
+        
+        // Test equals - equivalent objects
         AuthController.RegisterRequest request3 = new AuthController.RegisterRequest(
             "Juan", "Pérez", "juan@email.com", "password123", "CLIENTE"
         );
         assertEquals(request2, request3);
         assertEquals(request2.hashCode(), request3.hashCode());
+        
+        // Test equals - null
+        assertNotEquals(request2, null);
+        
+        // Test equals - different class
+        assertNotEquals(request2, "string");
+        
+        // Test canEqual
+        assertTrue(request2.canEqual(request3));
+        assertFalse(request2.canEqual("string"));
+        
+        // Test equals with different fields
+        AuthController.RegisterRequest request4 = new AuthController.RegisterRequest(
+            "Pedro", "Pérez", "juan@email.com", "password123", "CLIENTE"
+        );
+        assertNotEquals(request2, request4);
+        
+        AuthController.RegisterRequest request5 = new AuthController.RegisterRequest(
+            "Juan", "García", "juan@email.com", "password123", "CLIENTE"
+        );
+        assertNotEquals(request2, request5);
+        
+        AuthController.RegisterRequest request6 = new AuthController.RegisterRequest(
+            "Juan", "Pérez", "pedro@email.com", "password123", "CLIENTE"
+        );
+        assertNotEquals(request2, request6);
+        
+        AuthController.RegisterRequest request7 = new AuthController.RegisterRequest(
+            "Juan", "Pérez", "juan@email.com", "different", "CLIENTE"
+        );
+        assertNotEquals(request2, request7);
+        
+        AuthController.RegisterRequest request8 = new AuthController.RegisterRequest(
+            "Juan", "Pérez", "juan@email.com", "password123", "ADMIN"
+        );
+        assertNotEquals(request2, request8);
+        
+        // Test with null fields
+        AuthController.RegisterRequest requestNull1 = new AuthController.RegisterRequest();
+        AuthController.RegisterRequest requestNull2 = new AuthController.RegisterRequest();
+        assertEquals(requestNull1, requestNull2);
+        
+        requestNull1.setNombre("Test");
+        assertNotEquals(requestNull1, requestNull2);
+        
+        requestNull2.setNombre("Test");
+        assertEquals(requestNull1, requestNull2);
         
         // Test toString
         String toString = request2.toString();

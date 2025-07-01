@@ -365,4 +365,89 @@ class PedidoTest {
         assertNotNull(builderString);
         assertTrue(builderString.contains("PedidoBuilder"));
     }
+
+    @Test
+    void testEqualsEdgeCasesExhaustive() {
+        // Test casos edge de equals para maximizar cobertura de branches
+        
+        // Caso 1: ID null vs no null
+        Pedido p1 = new Pedido();
+        p1.setId(null);
+        p1.setEstado("PENDIENTE");
+        
+        Pedido p2 = new Pedido();
+        p2.setId(1L);
+        p2.setEstado("PENDIENTE");
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1); // Test simétrico
+        
+        // Caso 2: Fecha null vs no null
+        LocalDateTime fecha = LocalDateTime.now();
+        p1 = new Pedido();
+        p1.setId(1L);
+        p1.setFecha(null);
+        
+        p2 = new Pedido();
+        p2.setId(1L);
+        p2.setFecha(fecha);
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1);
+        
+        // Caso 3: Estado null vs no null
+        p1 = new Pedido();
+        p1.setId(1L);
+        p1.setEstado(null);
+        
+        p2 = new Pedido();
+        p2.setId(1L);
+        p2.setEstado("PENDIENTE");
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1);
+        
+        // Caso 4: Cliente null vs no null
+        p1 = new Pedido();
+        p1.setId(1L);
+        p1.setCliente(null);
+        
+        p2 = new Pedido();
+        p2.setId(1L);
+        p2.setCliente(cliente);
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1);
+        
+        // Caso 5: Lista productos null vs no null
+        p1 = new Pedido();
+        p1.setId(1L);
+        p1.setListaProductos(null);
+        
+        p2 = new Pedido();
+        p2.setId(1L);
+        p2.setListaProductos(listaProductos);
+        
+        assertNotEquals(p1, p2);
+        assertNotEquals(p2, p1);
+        
+        // Caso 6: Todos los campos null
+        p1 = new Pedido();
+        p2 = new Pedido();
+        assertEquals(p1, p2);
+        assertEquals(p1.hashCode(), p2.hashCode());
+        
+        // Caso 7: canEqual con null
+        assertFalse(p1.canEqual(null));
+        
+        // Caso 8: Test hashCode con diferentes combinaciones null
+        Pedido pNulo = new Pedido();
+        assertNotEquals(0, pNulo.hashCode()); // Debe generar hash aunque sea null
+        
+        pNulo.setId(1L);
+        int hash1 = pNulo.hashCode();
+        pNulo.setEstado("TEST");
+        int hash2 = pNulo.hashCode();
+        assertNotEquals(hash1, hash2);
+    }
 }

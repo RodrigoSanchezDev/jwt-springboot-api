@@ -1,5 +1,8 @@
 package com.letrasypapeles.backend.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -132,5 +135,72 @@ class JwtUtilTest {
 
         assertNotNull(token);
         assertEquals(0, authorities.size());
+    }
+    
+    @Test
+    void testValidateTokenWithExpiredToken() {
+        // Generar token que expire inmediatamente
+        ReflectionTestUtils.setField(jwtUtil, "jwtExpirationInMs", 1L); // 1 ms
+        
+        String token = jwtUtil.generateToken(userDetails);
+        
+        // Esperar a que expire
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        // Restaurar tiempo de expiración normal
+        ReflectionTestUtils.setField(jwtUtil, "jwtExpirationInMs", 86400000L);
+        
+        boolean isValid = jwtUtil.validateToken(token, userDetails);
+        assertFalse(isValid);
+    }
+    
+    @Test
+    void testExtractUsernameWithInvalidToken() {
+        String invalidToken = "invalid.jwt.token";
+        
+        assertThrows(Exception.class, () -> {
+            jwtUtil.extractUsername(invalidToken);
+        });
+    }
+    
+    @Test
+    void testExtractAuthoritiesWithInvalidToken() {
+        String invalidToken = "invalid.jwt.token";
+        
+        assertThrows(Exception.class, () -> {
+            jwtUtil.extractAuthorities(invalidToken);
+        });
+    }
+    
+    @Test
+    void testValidateTokenWithNullToken() {
+        boolean isValid = jwtUtil.validateToken(null, userDetails);
+        assertFalse(isValid);
+    }
+    
+    @Test
+    void testValidateTokenWithEmptyToken() {
+        boolean isValid = jwtUtil.validateToken("", userDetails);
+        assertFalse(isValid);
+    }
+    
+    @Test
+    void testExtractUsernameWithNullToken() {
+        assertThrows(Exception.class, () -> {
+            jwtUtil.extractUsername(null);
+        });
+    }
+    
+    @Test
+    void testExtractExpirationWithInvalidToken() {
+        String invalidToken = "invalid.jwt.token";
+        
+        assertThrows(Exception.class, () -> {
+            jwtUtil.extractExpiration(invalidToken);
+        });
     }
 }

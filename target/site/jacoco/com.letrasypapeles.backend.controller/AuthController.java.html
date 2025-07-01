@@ -37,20 +37,20 @@ import java.util.Map;
     private JwtUtil jwtUtil;
 
     // DTO para el request de login
-<span class="pc bpc" id="L40" title="13 of 22 branches missed.">    @Data @NoArgsConstructor @AllArgsConstructor</span>
+<span class="pc bpc" id="L40" title="3 of 22 branches missed.">    @Data @NoArgsConstructor @AllArgsConstructor</span>
     public static class LoginRequest {
 <span class="fc" id="L42">        private String email;</span>
 <span class="fc" id="L43">        private String contra; </span>
     }
 
     // DTO para la respuesta de login (token)
-<span class="pc bpc" id="L47" title="8 of 14 branches missed.">    @Data @NoArgsConstructor @AllArgsConstructor</span>
+<span class="pc bpc" id="L47" title="2 of 14 branches missed.">    @Data @NoArgsConstructor @AllArgsConstructor</span>
     public static class LoginResponse {
 <span class="fc" id="L49">        private String token;</span>
     }
 
     // DTO para el request de registro con rol
-<span class="pc bpc" id="L53" title="28 of 46 branches missed.">    @Data @NoArgsConstructor @AllArgsConstructor</span>
+<span class="pc bpc" id="L53" title="11 of 46 branches missed.">    @Data @NoArgsConstructor @AllArgsConstructor</span>
     public static class RegisterRequest {
         @NotEmpty(message = &quot;El nombre es obligatorio&quot;)
 <span class="fc" id="L56">        private String nombre;</span>

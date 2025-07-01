@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class InventarioControllerTest {
 
@@ -97,9 +97,75 @@ class InventarioControllerTest {
         Inventario inventarioExistente = Inventario.builder().id(1L).cantidad(10).build();
 
         when(inventarioService.obtenerPorId(1L)).thenReturn(Optional.of(inventarioExistente));
+        doNothing().when(inventarioService).eliminar(1L);
 
         ResponseEntity<Void> response = inventarioController.eliminarInventario(1L);
 
         assertEquals(200, response.getStatusCode().value());
+    }
+    
+    @Test
+    void testObtenerInventarioPorIdNoEncontrado() {
+        when(inventarioService.obtenerPorId(999L)).thenReturn(Optional.empty());
+
+        ResponseEntity<Inventario> response = inventarioController.obtenerPorId(999L);
+
+        assertEquals(404, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+    
+    @Test
+    void testActualizarInventarioNoEncontrado() {
+        Inventario inventarioParaActualizar = Inventario.builder().cantidad(20).build();
+        
+        when(inventarioService.obtenerPorId(999L)).thenReturn(Optional.empty());
+
+        ResponseEntity<Inventario> response = inventarioController.actualizarInventario(999L, inventarioParaActualizar);
+
+        assertEquals(404, response.getStatusCode().value());
+        assertNull(response.getBody());
+    }
+    
+    @Test
+    void testEliminarInventarioNoEncontrado() {
+        when(inventarioService.obtenerPorId(999L)).thenReturn(Optional.empty());
+
+        ResponseEntity<Void> response = inventarioController.eliminarInventario(999L);
+
+        assertEquals(404, response.getStatusCode().value());
+    }
+    
+    @Test
+    void testObtenerPorProductoId() {
+        List<Inventario> inventarios = Arrays.asList(
+                Inventario.builder().id(1L).cantidad(10).build(),
+                Inventario.builder().id(2L).cantidad(15).build()
+        );
+
+        when(inventarioService.obtenerPorProductoId(5L)).thenReturn(inventarios);
+
+        ResponseEntity<List<Inventario>> response = inventarioController.obtenerPorProductoId(5L);
+
+        assertEquals(200, response.getStatusCode().value());
+        List<Inventario> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(2, responseBody.size());
+    }
+    
+    @Test
+    void testObtenerPorSucursalId() {
+        List<Inventario> inventarios = Arrays.asList(
+                Inventario.builder().id(1L).cantidad(5).build()
+        );
+
+        when(inventarioService.obtenerPorSucursalId(3L)).thenReturn(inventarios);
+
+        ResponseEntity<List<Inventario>> response = inventarioController.obtenerPorSucursalId(3L);
+
+        assertEquals(200, response.getStatusCode().value());
+        List<Inventario> responseBody = response.getBody();
+        assertNotNull(responseBody);
+        assertEquals(1, responseBody.size());
+        assertEquals(5, responseBody.get(0).getCantidad());
     }
 }

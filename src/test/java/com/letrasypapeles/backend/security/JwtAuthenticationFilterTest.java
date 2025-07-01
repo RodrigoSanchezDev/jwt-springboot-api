@@ -18,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -169,6 +168,51 @@ class JwtAuthenticationFilterTest {
     void testDoFilterInternalWithPublicRoute() throws ServletException, IOException {
         // Arrange
         when(request.getRequestURI()).thenReturn("/api/auth/login");
+
+        // Act
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        // Assert
+        verify(jwtUtil, never()).extractUsername(anyString());
+        verify(usuarioService, never()).loadUserByUsername(anyString());
+        verify(filterChain).doFilter(request, response);
+    }
+    
+    @Test
+    void testDoFilterInternalWithEmptyAuthorizationHeader() throws ServletException, IOException {
+        // Arrange
+        when(request.getRequestURI()).thenReturn("/api/some-endpoint");
+        when(request.getHeader("Authorization")).thenReturn("");
+
+        // Act
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        // Assert
+        verify(jwtUtil, never()).extractUsername(anyString());
+        verify(usuarioService, never()).loadUserByUsername(anyString());
+        verify(filterChain).doFilter(request, response);
+    }
+    
+    @Test
+    void testDoFilterInternalWithBearerButNoToken() throws ServletException, IOException {
+        // Arrange
+        when(request.getRequestURI()).thenReturn("/api/some-endpoint");
+        when(request.getHeader("Authorization")).thenReturn("Bearer");
+
+        // Act
+        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
+
+        // Assert
+        verify(jwtUtil, never()).extractUsername(anyString());
+        verify(usuarioService, never()).loadUserByUsername(anyString());
+        verify(filterChain).doFilter(request, response);
+    }
+    
+    @Test
+    void testDoFilterInternalWithBearerAndShortToken() throws ServletException, IOException {
+        // Arrange
+        when(request.getRequestURI()).thenReturn("/api/some-endpoint");
+        when(request.getHeader("Authorization")).thenReturn("Bearer x");
 
         // Act
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
