@@ -305,4 +305,225 @@ public class ReservaTest {
         assertNotNull(builderString);
         assertTrue(builderString.contains("ReservaBuilder"));
     }
+    
+    @Test
+    public void testEqualsExhaustive() {
+        // Test all combinations of fields to cover all branches
+        LocalDateTime fecha = LocalDateTime.now();
+        Cliente cliente1 = Cliente.builder().id(1L).build();
+        Cliente cliente2 = Cliente.builder().id(2L).build();
+        Producto producto1 = Producto.builder().id(1L).build();
+        Producto producto2 = Producto.builder().id(2L).build();
+        
+        // Base reserva
+        Reserva base = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        
+        // Test different id
+        Reserva differentId = Reserva.builder()
+                .id(2L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, differentId);
+        
+        // Test null id vs non-null id
+        Reserva nullId = Reserva.builder()
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, nullId);
+        assertNotEquals(nullId, base);
+        
+        // Test both null ids
+        Reserva nullId2 = Reserva.builder()
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertEquals(nullId, nullId2);
+        
+        // Test different fechaReserva
+        Reserva differentFecha = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha.plusDays(1))
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, differentFecha);
+        
+        // Test null fechaReserva vs non-null fechaReserva
+        Reserva nullFecha = Reserva.builder()
+                .id(1L)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, nullFecha);
+        assertNotEquals(nullFecha, base);
+        
+        // Test different estado
+        Reserva differentEstado = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Confirmada")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, differentEstado);
+        
+        // Test null estado vs non-null estado
+        Reserva nullEstado = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, nullEstado);
+        assertNotEquals(nullEstado, base);
+        
+        // Test different cantidad
+        Reserva differentCantidad = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(10)
+                .cliente(cliente1)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, differentCantidad);
+        
+        // Test different cliente
+        Reserva differentCliente = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente2)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, differentCliente);
+        
+        // Test null cliente vs non-null cliente
+        Reserva nullCliente = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .producto(producto1)
+                .build();
+        assertNotEquals(base, nullCliente);
+        assertNotEquals(nullCliente, base);
+        
+        // Test different producto
+        Reserva differentProducto = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .producto(producto2)
+                .build();
+        assertNotEquals(base, differentProducto);
+        
+        // Test null producto vs non-null producto
+        Reserva nullProducto = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .build();
+        assertNotEquals(base, nullProducto);
+        assertNotEquals(nullProducto, base);
+        
+        // Test both null productos
+        Reserva nullProducto2 = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente1)
+                .build();
+        assertEquals(nullProducto, nullProducto2);
+    }
+    
+    @Test
+    public void testHashCodeExhaustive() {
+        // Test hashCode consistency with different field combinations
+        LocalDateTime fecha = LocalDateTime.now();
+        Cliente cliente = Cliente.builder().id(1L).build();
+        Producto producto = Producto.builder().id(1L).build();
+        
+        // Test hashCode with all fields
+        Reserva fullReserva = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente)
+                .producto(producto)
+                .build();
+        
+        // Test hashCode with null fields
+        Reserva nullFieldsReserva = new Reserva();
+        
+        // Both should produce consistent hashCodes
+        int fullHash1 = fullReserva.hashCode();
+        int fullHash2 = fullReserva.hashCode();
+        assertEquals(fullHash1, fullHash2);
+        
+        int nullHash1 = nullFieldsReserva.hashCode();
+        int nullHash2 = nullFieldsReserva.hashCode();
+        assertEquals(nullHash1, nullHash2);
+        
+        // Different objects with same values should have same hashCode
+        Reserva duplicate = Reserva.builder()
+                .id(1L)
+                .fechaReserva(fecha)
+                .estado("Pendiente")
+                .cantidad(5)
+                .cliente(cliente)
+                .producto(producto)
+                .build();
+        
+        assertEquals(fullReserva.hashCode(), duplicate.hashCode());
+    }
+    
+    @Test
+    public void testCanEqualExhaustive() {
+        Reserva reserva = new Reserva();
+        
+        // Test canEqual with same type
+        assertTrue(reserva.canEqual(new Reserva()));
+        
+        // Test canEqual with different types
+        assertFalse(reserva.canEqual("string"));
+        assertFalse(reserva.canEqual(123));
+        assertFalse(reserva.canEqual(null));
+        assertFalse(reserva.canEqual(new Object()));
+        
+        // Test canEqual with subclass scenario
+        Reserva subReserva = new Reserva() {};
+        assertTrue(reserva.canEqual(subReserva));
+    }
 }

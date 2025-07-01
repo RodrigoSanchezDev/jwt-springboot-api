@@ -358,4 +358,241 @@ public class InventarioTest {
         assertNotNull(builderString);
         assertTrue(builderString.contains("InventarioBuilder"));
     }
+    
+    @Test
+    public void testEqualsExhaustive() {
+        // Test all combinations of fields to cover all branches
+        
+        // Base inventario
+        Inventario base = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        
+        // Test different id
+        Inventario differentId = Inventario.builder()
+                .id(2L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, differentId);
+        
+        // Test null id vs non-null id
+        Inventario nullId = Inventario.builder()
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, nullId);
+        assertNotEquals(nullId, base);
+        
+        // Test both null ids
+        Inventario nullId2 = Inventario.builder()
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertEquals(nullId, nullId2);
+        
+        // Test different cantidad
+        Inventario differentCantidad = Inventario.builder()
+                .id(1L)
+                .cantidad(200)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, differentCantidad);
+        
+        // Test null cantidad vs non-null cantidad
+        Inventario nullCantidad = Inventario.builder()
+                .id(1L)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, nullCantidad);
+        
+        // Test different umbral
+        Inventario differentUmbral = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(30)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, differentUmbral);
+        
+        // Test null umbral vs non-null umbral
+        Inventario nullUmbral = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, nullUmbral);
+        
+        // Test different stockActual
+        Inventario differentStock = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(75)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(base, differentStock);
+        
+        // Test different umbralMinimo
+        Inventario differentUmbralMin = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(15)
+                .build();
+        assertNotEquals(base, differentUmbralMin);
+        
+        // Test different producto
+        Producto producto1 = new Producto();
+        producto1.setId(1L);
+        Producto producto2 = new Producto();
+        producto2.setId(2L);
+        
+        Inventario withProducto1 = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .producto(producto1)
+                .build();
+        
+        Inventario withProducto2 = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .producto(producto2)
+                .build();
+        
+        assertNotEquals(withProducto1, withProducto2);
+        
+        // Test null producto vs non-null producto
+        Inventario nullProducto = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(withProducto1, nullProducto);
+        
+        // Test different sucursal
+        Sucursal sucursal1 = new Sucursal();
+        sucursal1.setId(1L);
+        Sucursal sucursal2 = new Sucursal();
+        sucursal2.setId(2L);
+        
+        Inventario withSucursal1 = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .sucursal(sucursal1)
+                .build();
+        
+        Inventario withSucursal2 = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .sucursal(sucursal2)
+                .build();
+        
+        assertNotEquals(withSucursal1, withSucursal2);
+        
+        // Test null sucursal vs non-null sucursal
+        Inventario nullSucursal = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .build();
+        assertNotEquals(withSucursal1, nullSucursal);
+    }
+    
+    @Test
+    public void testHashCodeExhaustive() {
+        // Test hashCode consistency with different field combinations
+        
+        Producto producto = new Producto();
+        producto.setId(1L);
+        Sucursal sucursal = new Sucursal();
+        sucursal.setId(1L);
+        
+        // Test hashCode with all fields
+        Inventario fullInventario = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .producto(producto)
+                .sucursal(sucursal)
+                .build();
+        
+        // Test hashCode with null fields
+        Inventario nullFieldsInventario = new Inventario();
+        
+        // Both should produce consistent hashCodes
+        int fullHash1 = fullInventario.hashCode();
+        int fullHash2 = fullInventario.hashCode();
+        assertEquals(fullHash1, fullHash2);
+        
+        int nullHash1 = nullFieldsInventario.hashCode();
+        int nullHash2 = nullFieldsInventario.hashCode();
+        assertEquals(nullHash1, nullHash2);
+        
+        // Different objects with same values should have same hashCode
+        Inventario duplicate = Inventario.builder()
+                .id(1L)
+                .cantidad(100)
+                .umbral(20)
+                .stockActual(50)
+                .umbralMinimo(10)
+                .producto(producto)
+                .sucursal(sucursal)
+                .build();
+        
+        assertEquals(fullInventario.hashCode(), duplicate.hashCode());
+    }
+    
+    @Test
+    public void testCanEqualExhaustive() {
+        Inventario inventario = new Inventario();
+        
+        // Test canEqual with same type
+        assertTrue(inventario.canEqual(new Inventario()));
+        
+        // Test canEqual with different types
+        assertFalse(inventario.canEqual("string"));
+        assertFalse(inventario.canEqual(123));
+        assertFalse(inventario.canEqual(null));
+        assertFalse(inventario.canEqual(new Object()));
+        
+        // Test canEqual with subclass scenario
+        Inventario subInventario = new Inventario() {};
+        assertTrue(inventario.canEqual(subInventario));
+    }
 }

@@ -382,4 +382,275 @@ class ProductoTest {
         assertNotNull(builderString);
         assertTrue(builderString.contains("ProductoBuilder"));
     }
+    
+    @Test
+    public void testEqualsExhaustive() {
+        // Test all combinations of fields to cover all branches
+        Categoria categoria1 = Categoria.builder().id(1L).nombre("Cat1").build();
+        Categoria categoria2 = Categoria.builder().id(2L).nombre("Cat2").build();
+        Proveedor proveedor1 = Proveedor.builder().id(1L).nombre("Prov1").build();
+        Proveedor proveedor2 = Proveedor.builder().id(2L).nombre("Prov2").build();
+        
+        // Base producto
+        Producto base = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        
+        // Test different id
+        Producto differentId = Producto.builder()
+                .id(2L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, differentId);
+        
+        // Test null id vs non-null id
+        Producto nullId = Producto.builder()
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, nullId);
+        assertNotEquals(nullId, base);
+        
+        // Test both null ids
+        Producto nullId2 = Producto.builder()
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertEquals(nullId, nullId2);
+        
+        // Test different nombre
+        Producto differentNombre = Producto.builder()
+                .id(1L)
+                .nombre("Producto Diferente")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, differentNombre);
+        
+        // Test null nombre vs non-null nombre
+        Producto nullNombre = Producto.builder()
+                .id(1L)
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, nullNombre);
+        assertNotEquals(nullNombre, base);
+        
+        // Test different descripcion
+        Producto differentDescripcion = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción Diferente")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, differentDescripcion);
+        
+        // Test null descripcion vs non-null descripcion
+        Producto nullDescripcion = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, nullDescripcion);
+        assertNotEquals(nullDescripcion, base);
+        
+        // Test different precio
+        Producto differentPrecio = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("50.00"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, differentPrecio);
+        
+        // Test null precio vs non-null precio
+        Producto nullPrecio = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, nullPrecio);
+        assertNotEquals(nullPrecio, base);
+        
+        // Test different stock (Integer field)
+        Producto differentStock = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(50)
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, differentStock);
+        
+        // Test null stock vs non-null stock
+        Producto nullStock = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .categoria(categoria1)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, nullStock);
+        assertNotEquals(nullStock, base);
+        
+        // Test different categoria
+        Producto differentCategoria = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria2)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, differentCategoria);
+        
+        // Test null categoria vs non-null categoria
+        Producto nullCategoria = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .proveedor(proveedor1)
+                .build();
+        assertNotEquals(base, nullCategoria);
+        assertNotEquals(nullCategoria, base);
+        
+        // Test different proveedor
+        Producto differentProveedor = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .proveedor(proveedor2)
+                .build();
+        assertNotEquals(base, differentProveedor);
+        
+        // Test null proveedor vs non-null proveedor
+        Producto nullProveedor = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .build();
+        assertNotEquals(base, nullProveedor);
+        assertNotEquals(nullProveedor, base);
+        
+        // Test both null proveedores
+        Producto nullProveedor2 = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria1)
+                .build();
+        assertEquals(nullProveedor, nullProveedor2);
+    }
+    
+    @Test
+    public void testHashCodeExhaustive() {
+        // Test hashCode consistency with different field combinations
+        Categoria categoria = Categoria.builder().id(1L).nombre("Test").build();
+        Proveedor proveedor = Proveedor.builder().id(1L).nombre("Test").build();
+        
+        // Test hashCode with all fields
+        Producto fullProducto = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria)
+                .proveedor(proveedor)
+                .build();
+        
+        // Test hashCode with null fields
+        Producto nullFieldsProducto = new Producto();
+        
+        // Both should produce consistent hashCodes
+        int fullHash1 = fullProducto.hashCode();
+        int fullHash2 = fullProducto.hashCode();
+        assertEquals(fullHash1, fullHash2);
+        
+        int nullHash1 = nullFieldsProducto.hashCode();
+        int nullHash2 = nullFieldsProducto.hashCode();
+        assertEquals(nullHash1, nullHash2);
+        
+        // Different objects with same values should have same hashCode
+        Producto duplicate = Producto.builder()
+                .id(1L)
+                .nombre("Producto Test")
+                .descripcion("Descripción")
+                .precio(new BigDecimal("99.99"))
+                .stock(100)
+                .categoria(categoria)
+                .proveedor(proveedor)
+                .build();
+        
+        assertEquals(fullProducto.hashCode(), duplicate.hashCode());
+    }
+    
+    @Test
+    public void testCanEqualExhaustive() {
+        Producto producto = new Producto();
+        
+        // Test canEqual with same type
+        assertTrue(producto.canEqual(new Producto()));
+        
+        // Test canEqual with different types
+        assertFalse(producto.canEqual("string"));
+        assertFalse(producto.canEqual(123));
+        assertFalse(producto.canEqual(null));
+        assertFalse(producto.canEqual(new Object()));
+        
+        // Test canEqual with subclass scenario
+        Producto subProducto = new Producto() {};
+        assertTrue(producto.canEqual(subProducto));
+    }
 }
