@@ -32,6 +32,7 @@ com/letrasypapeles/backend/repository/ClienteRepository.class
 com/letrasypapeles/backend/entity/Proveedor$ProveedorBuilder.class
 com/letrasypapeles/backend/controller/ProductoController.class
 com/letrasypapeles/backend/security/SecurityConfig.class
+com/letrasypapeles/backend/exception/GlobalExceptionHandler.class
 com/letrasypapeles/backend/entity/Categoria.class
 com/letrasypapeles/backend/repository/InventarioRepository.class
 com/letrasypapeles/backend/repository/ProveedorRepository.class

@@ -24,6 +24,8 @@ public class Reserva {
 
     private String estado;
 
+    private int cantidad;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
@@ -31,4 +33,18 @@ public class Reserva {
     @ManyToOne
     @JoinColumn(name = "producto_id")
     private Producto producto;
+
+    // Método para establecer la cantidad de reserva
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    public int getCantidad() {
+        return this.cantidad;
+    }
+
+    // Método para validar si la reserva es posible
+    public boolean permitirReserva() {
+        return this.producto.getStock() >= this.cantidad;
+    }
 }

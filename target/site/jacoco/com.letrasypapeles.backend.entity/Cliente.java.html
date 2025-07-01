@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cliente.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.letrasypapeles.backend.entity</a> &gt; <span class="el_source">Cliente.java</span></div><h1>Cliente.java</h1><pre class="source lang-java linenums">package com.letrasypapeles.backend.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Set;
+
+@Entity
+@Table(name = &quot;clientes&quot;)
+<span class="pc bpc" id="L13" title="11 of 62 branches missed.">@Data</span>
+<span class="pc" id="L14">@Builder</span>
+<span class="fc" id="L15">@NoArgsConstructor</span>
+<span class="fc" id="L16">@AllArgsConstructor</span>
+public class Cliente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<span class="fc" id="L21">    private Long id;</span>
+
+<span class="fc" id="L23">    private String nombre;</span>
+<span class="fc" id="L24">    private String apellido;</span>
+<span class="fc" id="L25">    private String email;</span>
+
+    @Column(name = &quot;contrasena&quot;)
+<span class="fc" id="L28">    private String contraseña; </span>
+
+<span class="fc" id="L30">    private Integer puntosFidelidad;</span>
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = &quot;clientes_roles&quot;,
+        joinColumns = @JoinColumn(name = &quot;cliente_id&quot;),
+        inverseJoinColumns = @JoinColumn(name = &quot;role_nombre&quot;)
+    )
+<span class="fc" id="L38">    private Set&lt;Role&gt; roles;</span>
+
+    // Métodos para gestionar roles
+    public void agregarRol(Role role) {
+<span class="fc" id="L42">        this.roles.add(role);</span>
+<span class="fc" id="L43">    }</span>
+
+    public void eliminarRol(Role role) {
+<span class="fc" id="L46">        this.roles.remove(role);</span>
+<span class="fc" id="L47">    }</span>
+
+    public Set&lt;Role&gt; obtenerRoles() {
+<span class="fc" id="L50">        return this.roles;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

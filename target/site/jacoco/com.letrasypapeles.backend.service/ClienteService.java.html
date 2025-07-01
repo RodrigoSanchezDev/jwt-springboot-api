@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.letrasypapeles.backend.service</a> &gt; <span class="el_source">ClienteService.java</span></div><h1>ClienteService.java</h1><pre class="source lang-java linenums">package com.letrasypapeles.backend.service;
+
+import com.letrasypapeles.backend.entity.Cliente;
+import com.letrasypapeles.backend.entity.Role;
+import com.letrasypapeles.backend.repository.ClienteRepository;
+import com.letrasypapeles.backend.repository.RoleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L19">public class ClienteService {</span>
+
+<span class="fc" id="L21">    private static final Logger logger = LoggerFactory.getLogger(ClienteService.class);</span>
+
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public List&lt;Cliente&gt; obtenerTodos() {
+<span class="fc" id="L33">        return clienteRepository.findAll();</span>
+    }
+
+    public Optional&lt;Cliente&gt; obtenerPorId(Long id) {
+<span class="fc" id="L37">        return clienteRepository.findById(id);</span>
+    }
+
+    public Optional&lt;Cliente&gt; obtenerPorEmail(String email) {
+<span class="fc" id="L41">        return clienteRepository.findByEmail(email);</span>
+    }
+
+    public Cliente registrarCliente(Cliente cliente) {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (clienteRepository.existsByEmail(cliente.getEmail())) {</span>
+<span class="fc" id="L46">            throw new RuntimeException(&quot;El correo electrónico ya está registrado.&quot;);</span>
+        }
+
+<span class="fc" id="L49">        String rawPassword = cliente.getContraseña();</span>
+<span class="fc" id="L50">        String hashed = passwordEncoder.encode(rawPassword);</span>
+<span class="fc" id="L51">        cliente.setContraseña(hashed);</span>
+
+<span class="fc" id="L53">        cliente.setPuntosFidelidad(0);</span>
+
+<span class="fc" id="L55">        Role rolCliente = roleRepository.findByNombre(&quot;CLIENTE&quot;)</span>
+<span class="fc" id="L56">                .orElseThrow(() -&gt; new RuntimeException(&quot;El rol 'CLIENTE' no existe en la BD.&quot;));</span>
+<span class="fc" id="L57">        cliente.setRoles(Collections.singleton(rolCliente));</span>
+
+<span class="fc" id="L59">        return clienteRepository.save(cliente);</span>
+    }
+
+    public Cliente registrarClienteConRol(Cliente cliente, String rolNombre) {
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (clienteRepository.existsByEmail(cliente.getEmail())) {</span>
+<span class="fc" id="L64">            throw new RuntimeException(&quot;El correo electrónico ya está registrado.&quot;);</span>
+        }
+
+<span class="fc" id="L67">        String rawPassword = cliente.getContraseña();</span>
+<span class="fc bfc" id="L68" title="All 4 branches covered.">        if (rawPassword == null || rawPassword.isBlank()) {</span>
+<span class="fc" id="L69">            throw new IllegalArgumentException(&quot;La contraseña no puede ser nula o vacía.&quot;);</span>
+        }
+
+<span class="fc" id="L72">        String hashed = passwordEncoder.encode(rawPassword);</span>
+<span class="fc" id="L73">        cliente.setContraseña(hashed);</span>
+<span class="fc" id="L74">        cliente.setPuntosFidelidad(0);</span>
+
+<span class="fc bfc" id="L76" title="All 4 branches covered.">        String rolFinal = (rolNombre == null || rolNombre.isBlank()) ? &quot;CLIENTE&quot; : rolNombre.trim().toUpperCase();</span>
+<span class="fc" id="L77">        Role rol = roleRepository.findByNombre(rolFinal)</span>
+<span class="fc" id="L78">                .orElseThrow(() -&gt; new RuntimeException(&quot;El rol '&quot; + rolFinal + &quot;' no existe en la BD.&quot;));</span>
+<span class="fc" id="L79">        logger.info(&quot;Asignando rol '{}' al cliente {}&quot;, rol.getNombre(), cliente.getEmail());</span>
+<span class="fc" id="L80">        cliente.setRoles(Collections.singleton(rol));</span>
+<span class="fc" id="L81">        logger.info(&quot;Roles antes de guardar: {}&quot;, cliente.getRoles());</span>
+
+<span class="fc" id="L83">        clienteRepository.save(cliente);</span>
+<span class="fc" id="L84">        Cliente recargado = clienteRepository.findByEmail(cliente.getEmail()).orElseThrow();</span>
+<span class="fc" id="L85">        logger.info(&quot;Roles después de guardar y recargar: {}&quot;, recargado.getRoles());</span>
+<span class="fc" id="L86">        return recargado;</span>
+    }
+
+    public Cliente actualizarCliente(Cliente cliente) {
+<span class="fc" id="L90">        return clienteRepository.save(cliente);</span>
+    }
+
+    public void eliminar(Long id) {
+<span class="fc" id="L94">        clienteRepository.deleteById(id);</span>
+<span class="fc" id="L95">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

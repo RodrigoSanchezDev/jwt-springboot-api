@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.letrasypapeles.backend.service</a> &gt; <span class="el_source">ReservaService.java</span></div><h1>ReservaService.java</h1><pre class="source lang-java linenums">package com.letrasypapeles.backend.service;
+
+import com.letrasypapeles.backend.entity.Reserva;
+import com.letrasypapeles.backend.entity.Inventario;
+import com.letrasypapeles.backend.entity.Producto;
+import com.letrasypapeles.backend.entity.Proveedor;
+import com.letrasypapeles.backend.repository.ReservaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L15">public class ReservaService {</span>
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+
+    @Autowired
+    private InventarioService inventarioService;
+
+    @Autowired
+    private ProveedorService proveedorService;
+
+    public List&lt;Reserva&gt; obtenerTodas() {
+<span class="fc" id="L27">        return reservaRepository.findAll();</span>
+    }
+
+    public Optional&lt;Reserva&gt; obtenerPorId(Long id) {
+<span class="fc" id="L31">        return reservaRepository.findById(id);</span>
+    }
+
+    public Reserva guardar(Reserva reserva) {
+<span class="fc" id="L35">        return reservaRepository.save(reserva);</span>
+    }
+
+    public void eliminar(Long id) {
+<span class="fc" id="L39">        reservaRepository.deleteById(id);</span>
+<span class="fc" id="L40">    }</span>
+
+    public List&lt;Reserva&gt; obtenerPorClienteId(Long clienteId) {
+<span class="fc" id="L43">        return reservaRepository.findByClienteId(clienteId);</span>
+    }
+
+    public List&lt;Reserva&gt; obtenerPorProductoId(Long productoId) {
+<span class="fc" id="L47">        return reservaRepository.findByProductoId(productoId);</span>
+    }
+
+    public List&lt;Reserva&gt; obtenerPorEstado(String estado) {
+<span class="fc" id="L51">        return reservaRepository.findByEstado(estado);</span>
+    }
+
+    public Reserva guardarConValidacion(Reserva reserva) {
+<span class="fc" id="L55">        List&lt;Inventario&gt; inventarios = inventarioService.obtenerPorProductoId(reserva.getProducto().getId());</span>
+<span class="fc" id="L56">        int totalStock = inventarios.stream().mapToInt(Inventario::getCantidad).sum();</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (totalStock &gt; 0) {</span>
+<span class="fc" id="L59">            reserva.setEstado(&quot;Confirmada&quot;);</span>
+<span class="fc" id="L60">            return reservaRepository.save(reserva);</span>
+        } else {
+<span class="fc" id="L62">            reserva.setEstado(&quot;Rechazada&quot;);</span>
+<span class="fc" id="L63">            return reservaRepository.save(reserva);</span>
+        }
+    }
+
+    public Reserva guardarConProveedorValidado(Reserva reserva) {
+<span class="fc" id="L68">        Proveedor proveedor = reserva.getProducto().getProveedor();</span>
+<span class="pc bpc" id="L69" title="1 of 6 branches missed.">        if (proveedor == null || proveedor.getNombre() == null || proveedor.getContacto() == null) {</span>
+<span class="fc" id="L70">            throw new RuntimeException(&quot;El proveedor asignado no tiene información completa.&quot;);</span>
+        }
+
+<span class="fc" id="L73">        return guardarConValidacion(reserva);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

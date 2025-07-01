@@ -63,7 +63,12 @@ public class ClienteService {
         if (clienteRepository.existsByEmail(cliente.getEmail())) {
             throw new RuntimeException("El correo electrónico ya está registrado.");
         }
+
         String rawPassword = cliente.getContraseña();
+        if (rawPassword == null || rawPassword.isBlank()) {
+            throw new IllegalArgumentException("La contraseña no puede ser nula o vacía.");
+        }
+
         String hashed = passwordEncoder.encode(rawPassword);
         cliente.setContraseña(hashed);
         cliente.setPuntosFidelidad(0);

@@ -36,4 +36,17 @@ public class Cliente {
         inverseJoinColumns = @JoinColumn(name = "role_nombre")
     )
     private Set<Role> roles;
+
+    // Métodos para gestionar roles
+    public void agregarRol(Role role) {
+        this.roles.add(role);
+    }
+
+    public void eliminarRol(Role role) {
+        this.roles.remove(role);
+    }
+
+    public Set<Role> obtenerRoles() {
+        return this.roles;
+    }
 }

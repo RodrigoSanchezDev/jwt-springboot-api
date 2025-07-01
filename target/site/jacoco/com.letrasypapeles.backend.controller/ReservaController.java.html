@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.letrasypapeles.backend.controller</a> &gt; <span class="el_source">ReservaController.java</span></div><h1>ReservaController.java</h1><pre class="source lang-java linenums">package com.letrasypapeles.backend.controller;
+
+import com.letrasypapeles.backend.entity.Reserva;
+import com.letrasypapeles.backend.service.ReservaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/reservas&quot;)
+<span class="fc" id="L12">public class ReservaController {</span>
+
+    @Autowired
+    private ReservaService reservaService;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Reserva&gt;&gt; obtenerTodas() {
+<span class="fc" id="L19">        List&lt;Reserva&gt; reservas = reservaService.obtenerTodas();</span>
+<span class="fc" id="L20">        return ResponseEntity.ok(reservas);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Reserva&gt; obtenerPorId(@PathVariable Long id) {
+<span class="fc" id="L25">        return reservaService.obtenerPorId(id)</span>
+<span class="fc" id="L26">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L27">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @GetMapping(&quot;/cliente/{clienteId}&quot;)
+    public ResponseEntity&lt;List&lt;Reserva&gt;&gt; obtenerPorClienteId(@PathVariable Long clienteId) {
+<span class="fc" id="L32">        List&lt;Reserva&gt; reservas = reservaService.obtenerPorClienteId(clienteId);</span>
+<span class="fc" id="L33">        return ResponseEntity.ok(reservas);</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;Reserva&gt; crearReserva(@RequestBody Reserva reserva) {
+<span class="fc" id="L38">        Reserva nuevaReserva = reservaService.guardar(reserva);</span>
+<span class="fc" id="L39">        return ResponseEntity.ok(nuevaReserva);</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Reserva&gt; actualizarReserva(@PathVariable Long id, @RequestBody Reserva reserva) {
+<span class="fc" id="L44">        return reservaService.obtenerPorId(id)</span>
+<span class="fc" id="L45">                .map(r -&gt; {</span>
+<span class="fc" id="L46">                    reserva.setId(id);</span>
+<span class="fc" id="L47">                    Reserva reservaActualizada = reservaService.guardar(reserva);</span>
+<span class="fc" id="L48">                    return ResponseEntity.ok(reservaActualizada);</span>
+                })
+<span class="fc" id="L50">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; eliminarReserva(@PathVariable Long id) {
+<span class="fc" id="L55">        return reservaService.obtenerPorId(id)</span>
+<span class="fc" id="L56">                .map(r -&gt; {</span>
+<span class="fc" id="L57">                    reservaService.eliminar(id);</span>
+<span class="fc" id="L58">                    return ResponseEntity.ok().&lt;Void&gt;build();</span>
+                })
+<span class="fc" id="L60">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

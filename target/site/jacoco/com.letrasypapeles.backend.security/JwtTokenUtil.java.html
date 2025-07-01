@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtTokenUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.letrasypapeles.backend.security</a> &gt; <span class="el_source">JwtTokenUtil.java</span></div><h1>JwtTokenUtil.java</h1><pre class="source lang-java linenums">package com.letrasypapeles.backend.security;
+
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+import java.util.function.Function;
+
+@Component
+<span class="fc" id="L14">public class JwtTokenUtil {</span>
+
+    // La clave secreta la leemos desde application.properties
+    @Value(&quot;${jwt.secret}&quot;)
+    private String jwtSecret;
+
+    // Expiración en milisegundos
+    @Value(&quot;${jwt.expiration}&quot;)
+    private long jwtExpirationMs;
+
+    // Generar token a partir de UserDetails 
+    public String generateToken(UserDetails userDetails) {
+<span class="fc" id="L26">        return Jwts.builder()</span>
+<span class="fc" id="L27">                .setSubject(userDetails.getUsername())</span>
+<span class="fc" id="L28">                .setIssuedAt(new Date())</span>
+<span class="fc" id="L29">                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))</span>
+<span class="fc" id="L30">                .signWith(getSigningKey(), SignatureAlgorithm.HS256)</span>
+<span class="fc" id="L31">                .compact();</span>
+    }
+
+    // Extraer el email de un token
+    public String getUsernameFromToken(String token) {
+<span class="fc" id="L36">        return getClaimFromToken(token, Claims::getSubject);</span>
+    }
+
+    // Extraer cualquier claim usando una función
+    private &lt;T&gt; T getClaimFromToken(String token, Function&lt;Claims, T&gt; claimsResolver) {
+<span class="fc" id="L41">        final Claims claims = parseAllClaims(token);</span>
+<span class="fc" id="L42">        return claimsResolver.apply(claims);</span>
+    }
+
+    // Verificar si el token está expirado
+    public boolean isTokenExpired(String token) {
+<span class="fc" id="L47">        final Date expiration = getClaimFromToken(token, Claims::getExpiration);</span>
+<span class="fc" id="L48">        return expiration.before(new Date());</span>
+    }
+
+    // Validar token contra los datos del usuario
+    public boolean validateToken(String token, UserDetails userDetails) {
+<span class="fc" id="L53">        final String username = getUsernameFromToken(token);</span>
+<span class="pc bpc" id="L54" title="2 of 4 branches missed.">        return ( username.equals(userDetails.getUsername()) &amp;&amp; !isTokenExpired(token) );</span>
+    }
+
+    // Método interno: parsear todos los claims
+    private Claims parseAllClaims(String token) {
+        try {
+<span class="fc" id="L60">            return Jwts.parserBuilder()</span>
+<span class="fc" id="L61">                    .setSigningKey(getSigningKey())</span>
+<span class="fc" id="L62">                    .build()</span>
+<span class="fc" id="L63">                    .parseClaimsJws(token)</span>
+<span class="fc" id="L64">                    .getBody();</span>
+<span class="fc" id="L65">        } catch (ExpiredJwtException ex) {</span>
+<span class="fc" id="L66">            throw ex;</span>
+<span class="fc" id="L67">        } catch (JwtException ex) {</span>
+            // cualquier otro error de parseo / validación
+<span class="fc" id="L69">            throw new RuntimeException(&quot;JWT inválido o expirado&quot;);</span>
+        }
+    }
+
+    private Key getSigningKey() {
+<span class="fc" id="L74">        return Keys.hmacShaKeyFor(jwtSecret.getBytes());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

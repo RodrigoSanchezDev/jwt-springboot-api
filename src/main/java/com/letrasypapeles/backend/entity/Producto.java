@@ -35,4 +35,13 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "proveedor_id")
     private Proveedor proveedor;
+
+    // Método para actualizar el stock tras una reserva
+    public void actualizarStockTrasReserva(int cantidadReservada) {
+        if (cantidadReservada <= this.stock) {
+            this.stock -= cantidadReservada;
+        } else {
+            throw new IllegalArgumentException("Cantidad reservada excede el stock disponible.");
+        }
+    }
 }

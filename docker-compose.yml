@@ -12,7 +12,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:                        # ← el backend esperará a que MySQL esté sano
+    healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 10s
       retries: 5
@@ -21,14 +21,14 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockerfile            # el mismo que ya usas para empacar tu jar
+      dockerfile: Dockerfile
     container_name: letras_backend
     restart: unless-stopped
     depends_on:
       mysql:
-        condition: service_healthy      # espera al OK de la health-check
-    environment:                        # ← TODAS las propiedades sensibles van aquí
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/letrasypapeles_db
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://letras_mysql:3306/letrasypapeles_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: password
       JWT_SECRET: 'Ay9v#eLP2Pu4zS6m8LqGvB$K7tPc@hWs3rZeX1q%U2dN5jY9x4BwCcR0SaMfHg8'

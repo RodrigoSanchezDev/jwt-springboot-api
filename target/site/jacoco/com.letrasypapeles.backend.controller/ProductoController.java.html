@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.letrasypapeles.backend.controller</a> &gt; <span class="el_source">ProductoController.java</span></div><h1>ProductoController.java</h1><pre class="source lang-java linenums">package com.letrasypapeles.backend.controller;
+
+import com.letrasypapeles.backend.entity.Producto;
+import com.letrasypapeles.backend.service.ProductoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/productos&quot;)
+<span class="fc" id="L12">public class ProductoController {</span>
+
+    @Autowired
+    private ProductoService productoService;
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Producto&gt;&gt; obtenerTodos() {
+<span class="fc" id="L19">        List&lt;Producto&gt; productos = productoService.obtenerTodos();</span>
+<span class="fc" id="L20">        return ResponseEntity.ok(productos);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Producto&gt; obtenerPorId(@PathVariable Long id) {
+<span class="fc" id="L25">        return productoService.obtenerPorId(id)</span>
+<span class="fc" id="L26">                .map(ResponseEntity::ok)</span>
+<span class="fc" id="L27">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;Producto&gt; crearProducto(@RequestBody Producto producto) {
+<span class="fc" id="L32">        Producto nuevoProducto = productoService.guardar(producto);</span>
+<span class="fc" id="L33">        return ResponseEntity.ok(nuevoProducto);</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Producto&gt; actualizarProducto(@PathVariable Long id, @RequestBody Producto producto) {
+<span class="fc" id="L38">        return productoService.obtenerPorId(id)</span>
+<span class="fc" id="L39">                .map(p -&gt; {</span>
+<span class="fc" id="L40">                    producto.setId(id);</span>
+<span class="fc" id="L41">                    Producto productoActualizado = productoService.guardar(producto);</span>
+<span class="fc" id="L42">                    return ResponseEntity.ok(productoActualizado);</span>
+                })
+<span class="fc" id="L44">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; eliminarProducto(@PathVariable Long id) {
+<span class="fc" id="L49">        return productoService.obtenerPorId(id)</span>
+<span class="fc" id="L50">                .map(p -&gt; {</span>
+<span class="fc" id="L51">                    productoService.eliminar(id);</span>
+<span class="fc" id="L52">                    return ResponseEntity.ok().&lt;Void&gt;build();</span>
+                })
+<span class="fc" id="L54">                .orElse(ResponseEntity.notFound().build());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

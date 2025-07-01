@@ -21,8 +21,11 @@ WORKDIR /app
 # Copiamos el JAR que generó la etapa "build"
 COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar app.jar
 
+# Copiar application.properties al contenedor
+COPY src/main/resources/application.properties /app/application.properties
+
 # Exponemos el puerto 8080 (el que usa tu aplicación Spring Boot)
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+# Comando para ejecutar la aplicación con el archivo de configuración
+ENTRYPOINT ["java","-jar","/app/app.jar","--spring.config.location=file:/app/application.properties"]
