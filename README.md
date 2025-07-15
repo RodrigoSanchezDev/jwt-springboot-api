@@ -1,9 +1,58 @@
-# Letras y Papeles - Spring Boot REST API with JWT Authentication
+# Letras y Papeles - Spring Boot REST API with JWT Authentication + HATEOAS
 
-A comprehensive RESTful API for managing bookstore operations, built with Java, Spring Boot, and JWT authentication. This project provides secure client management, role-based authorization, and modern security practices suitable for enterprise applications and microservices architecture.
+A comprehensive RESTful API for managing bookstore operations, built with Java, Spring Boot, JWT authentication, and **HATEOAS (Hypermedia as the Engine of Application State)**. This project provides secure client management, role-based authorization, hypermedia navigation, and modern REST practices suitable for enterprise applications and microservices architecture.
 
-## Main Endpoints
+## 🌟 NEW: HATEOAS Implementation (Richardson Level 3)
 
+This API now features **full HATEOAS implementation** with **API V2**, providing:
+
+- **🔗 Hypermedia Navigation**: Auto-discoverable API with contextual links
+- **📡 API Discovery**: Root endpoint (`/api/v2`) for complete resource exploration  
+- **🏗️ Richardson Level 3**: True RESTful implementation with hypermedia controls
+- **🔄 Backward Compatibility**: V1 API maintained with deprecation strategy
+- **📖 HAL + HAL-FORMS**: Industry-standard hypermedia formats
+
+### Quick HATEOAS Demo
+```bash
+# Run the complete HATEOAS demonstration
+./demo-hateoas.sh
+
+# Or explore manually:
+curl http://localhost:8080/api/v2 -H "Accept: application/hal+json"
+```
+
+## 📚 API Documentation
+
+This project includes **dual-version API documentation** using **OpenAPI 3.0** (Swagger):
+
+- **Interactive API Explorer**: `http://localhost:8080/swagger-ui.html`
+- **API V2 (HATEOAS)**: Complete hypermedia navigation with discovery
+- **API V1 (Deprecated)**: Original endpoints marked for migration
+- **OpenAPI JSON**: `http://localhost:8080/api-docs`
+- **Complete endpoint documentation** with request/response examples
+- **Authentication integration** - test JWT-protected endpoints directly from the UI
+- **Schema documentation** for all data models with hypermedia support
+
+### Using Swagger UI
+
+1. Start the application with Docker: `docker-compose up --build --no-cache`
+2. Navigate to: `http://localhost:8080/swagger-ui.html`
+3. To test protected endpoints:
+   - First, use `/api/auth/login` to get a JWT token
+   - Click the **"Authorize"** button in Swagger UI
+   - Enter: `Bearer YOUR_JWT_TOKEN`
+   - Now you can test all protected endpoints in both V1 and V2
+
+## 🔗 API Versions
+
+### **V2 - HATEOAS (Recommended)**
+- `GET /api/v2` — API Discovery root with navigation links
+- `GET /api/v2/clientes` — Hypermedia client management
+- `GET /api/v2/productos` — Product catalog with navigation
+- `GET /api/v2/pedidos` — Order management with contextual links
+- `GET /api/v2/reservas` — Reservation system with hypermedia
+
+### **V1 - Traditional REST (Deprecated)**
 - `POST /api/auth/register` — Registro de usuario con rol  
   ![Formulario de registro con Spring Boot](assets/img/formulario-register.png)
 
@@ -17,13 +66,17 @@ A comprehensive RESTful API for managing bookstore operations, built with Java, 
 
 ## 🚀 Key Features
 
-- **Stateless Authentication**: JWT-based authentication system for scalable applications
-- **Role-Based Authorization**: Multi-level access control (CLIENT, EMPLOYEE, MANAGER, ADMIN)
-- **Secure Endpoints**: Protected routes with granular permission management
-- **Modern Architecture**: Clean, maintainable code following Spring Boot best practices
-- **Database Integration**: Full JPA/Hibernate support with relational database design
-- **Security First**: BCrypt password hashing and comprehensive security filters
-- **High Test Coverage**: 98% code coverage with comprehensive unit and integration tests
+- **🔗 HATEOAS Navigation**: Richardson Level 3 RESTful implementation with hypermedia
+- **🔄 API Versioning**: V2 with HATEOAS + V1 backward compatibility
+- **🔒 Stateless Authentication**: JWT-based authentication system for scalable applications
+- **👥 Role-Based Authorization**: Multi-level access control (CLIENT, EMPLOYEE, MANAGER, ADMIN)
+- **🛡️ Secure Endpoints**: Protected routes with granular permission management
+- **🏗️ Modern Architecture**: Clean, maintainable code following Spring Boot best practices
+- **💾 Database Integration**: Full JPA/Hibernate support with relational database design
+- **🔐 Security First**: BCrypt password hashing and comprehensive security filters
+- **🧪 High Test Coverage**: 98% code coverage with comprehensive unit and integration tests (426 tests passing)
+- **📚 API Documentation**: Complete OpenAPI 3.0 documentation with interactive Swagger UI
+- **🎯 HAL + HAL-FORMS**: Industry-standard hypermedia formats for API discoverability
 
 ---
 
@@ -34,7 +87,7 @@ A comprehensive RESTful API for managing bookstore operations, built with Java, 
 - **Database**: JPA/Hibernate with MySQL/MariaDB support
 - **Testing**: JUnit 5, Mockito, JaCoCo for coverage analysis
 - **Code Quality**: SonarCloud integration for continuous code quality monitoring
-- **Documentation**: OpenAPI 3.0 (Swagger)
+- **Documentation**: OpenAPI 3.0 (Swagger), SpringDoc OpenAPI
 - **DevOps**: Docker, Docker Compose ready
 
 ---

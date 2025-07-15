@@ -1,5 +1,6 @@
 package com.letrasypapeles.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Role {
     @EqualsAndHashCode.Include
     private String nombre;
 
+    @JsonIgnore  // Evitar serialización recursiva
     @ManyToMany(mappedBy = "roles")
     private Set<Cliente> clientes;
 }

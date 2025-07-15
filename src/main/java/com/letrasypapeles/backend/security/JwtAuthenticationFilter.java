@@ -1,5 +1,6 @@
 package com.letrasypapeles.backend.security;
 
+import com.letrasypapeles.backend.config.SwaggerSecurityProperties;
 import com.letrasypapeles.backend.service.UsuarioService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private UsuarioService usuarioService;
+    
+    @Autowired
+    private SwaggerSecurityProperties swaggerSecurityProperties;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -34,10 +38,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Ignorar rutas públicas para el filtro JWT
         String path = request.getRequestURI();
+        
+        // Siempre ignorar rutas de autenticación y H2
         if (path.startsWith("/api/auth/") || path.startsWith("/h2-console/")) {
             filterChain.doFilter(request, response);
             return;
         }
+        
+        // Configuración dinámica para rutas de Swagger
+        if (!swaggerSecurityProperties.isSecurityEnabled()) {
+            // MODO DESARROLLO: Ignorar todas las rutas de Swagger
+            if (path.startsWith("/swagger-ui/") || path.equals("/swagger-ui.html") ||
+                path.startsWith("/v3/api-docs/") || path.equals("/v3/api-docs") ||
+                path.startsWith("/api-docs/") || path.equals("/api-docs") ||
+                path.startsWith("/swagger-resources/") || path.startsWith("/webjars/") ||
+                path.equals("/swagger-config") || path.equals("/api-docs.yaml")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+        // MODO PRODUCCIÓN: Las rutas de Swagger pasan por JWT si securityEnabled=true
 
         // 1) Capturamos el header "Authorization"
         final String header = request.getHeader("Authorization");

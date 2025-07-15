@@ -1,5 +1,6 @@
 package com.letrasypapeles.backend.security;
 
+import com.letrasypapeles.backend.config.SwaggerSecurityProperties;
 import com.letrasypapeles.backend.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class JwtAuthenticationFilterTest {
     private UsuarioService usuarioService;
 
     @Mock
+    private SwaggerSecurityProperties swaggerSecurityProperties;
+
+    @Mock
     private HttpServletRequest request;
 
     @Mock
@@ -46,6 +50,9 @@ class JwtAuthenticationFilterTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        
+        // Mock SwaggerSecurityProperties con valor por defecto
+        when(swaggerSecurityProperties.isSecurityEnabled()).thenReturn(true);
         
         userDetails = User.builder()
                 .username("test@example.com")
